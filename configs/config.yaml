@@ -1,0 +1,54 @@
+model:
+  model_name: "t5-small"
+  should_train: False
+
+data:
+  batch_size: 2
+  shuffle: true
+  max_input_length: 512
+
+trainer:
+  num_epochs: 3
+  learning_rate: 5e-5
+  save_model_path: "./model"
+
+logging:
+  log_frequency: 100
+  print_summary: true
+
+device:
+  cuda: True
+
+prune:
+  attention_heads:
+    enable: True
+    args:
+      heads_to_remove: [ 0, 1 ]
+  mlp_neurons:
+    enable: False
+    args:
+      layer_idx: 1
+      neurons_to_remove: [ 10, 20, 30 ]
+  tokens:
+    enable: False
+    args:
+      threshold_factor: 0.2
+  magnitude:
+    enable: False
+    args:
+      prune_amount: 0.3
+      remove_pruned: True
+  gradient:
+    enable: False
+    args:
+      prune_amount: 0.3
+      remove_pruned: True
+  stochastic:
+    enable: False
+    args:
+      prune_amount: 0.1
+      remove_pruned: True
+
+quantization:
+  enable: False
+  method: "dynamic" # Options: "dynamic", "onnx"

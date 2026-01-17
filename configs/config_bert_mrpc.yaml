@@ -1,0 +1,68 @@
+model:
+  model_name: "textattack/bert-base-uncased-MRPC"
+data:
+  batch_size: 24
+  shuffle: false
+  max_input_length: 512
+  task: "mrpc"
+  split: "validation"
+
+trainer:
+  num_epochs: 3
+  learning_rate: 5e-5
+  save_model_path: "./model"
+
+logging:
+  log_frequency: 100
+  print_summary: true
+
+device:
+  cuda: False
+
+#prune:
+#  magnitude:
+#    enable: False
+#    args:
+#      prune_amount: 0.3
+#      remove_pruned: True
+
+prune:
+  attention_heads:
+    enable: False
+    args:
+      prune_amount: 0.15
+      strategy: "l1"
+      seed: 42
+
+  mlp_neurons:
+    enable: False
+    args:
+      prune_amount: 0.15
+      strategy: "l1"
+      seed: 42
+
+  magnitude:
+    enable: False
+
+quantization:
+  enable: False
+  method: "dynamic" # Options: "dynamic", "onnx"
+
+#rmt_lowrank:
+#  enable: true
+#  denoise: true
+#  shrink_method: "gavish_donoho"
+#  k_mode: "energy"
+#  energy: 0.99
+#  apply_to: "bert_linear_only"
+
+rmt_lowrank:
+  enable: true
+  denoise: true
+  shrink_method: "gavish_donoho"
+  k_mode: "energy"
+  energy: 0.995
+  apply_to: "ffn_only"
+  k_min: 384
+  layers: [7, 8, 9, 10, 11]
+
